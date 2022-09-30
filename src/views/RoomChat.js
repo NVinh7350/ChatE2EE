@@ -1,0 +1,14 @@
+import { StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+
+const RoomChat = () => {
+  return (
+    <View>
+      <Text>RoomChat</Text>
+    </View>
+  )
+}
+
+export default RoomChat
+
+const styles = StyleSheet.create({})
