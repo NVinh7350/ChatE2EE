@@ -1,7 +1,10 @@
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View , Image, Alert} from 'react-native'
 import React, { useState } from 'react'
-import Colors from '../colors/colors'
+// import color from 'C:/Learn/ChatE2EE/src/utility/index.js'
 let navigations = null;
+import {color} from 'c:/Learn/ChatE2EE/src/utility'
+import Header from './header'
+import FieldInput from '../../component/fieldInput';
 //
 const heightScreen = Dimensions.get('screen').height;
 const widthScreen = Dimensions.get('screen').width;
@@ -11,24 +14,24 @@ const SCREEN_REGISTER= 'SCREEN_REGISTER';
 let   colorLogin = '';
 let   colorRegister = '';
 
-const Header = () => {
-    return (
-        <View style={ styles.containerHeader }>
-            <Text style= { styles.textTitleBig }> E2EE </Text>
-            <Text style= { styles.textTitleSmall}> Chat sercurity</Text>
-        </View>
-  )
-}
+// const Header = () => {
+//     return (
+//         <View style={ styles.containerHeader }>
+//             <Text style= { styles.textTitleBig }> E2EE </Text>
+//             <Text style= { styles.textTitleSmall}> Chat sercurity</Text>
+//         </View>
+//   )
+// }
 
 const Body = () => {
     let [screen, setScreen] = useState(SCREEN_LOGIN);
     if (screen === SCREEN_LOGIN){
-        colorLogin = Colors.blueDark;
-        colorRegister = Colors.grayDark;
+        colorLogin = color.BLUE_DARK;
+        colorRegister = color.GRAY_DARK;
     }
     else {
-        colorLogin = Colors.grayDark;
-        colorRegister = Colors.blueDark;
+        colorLogin = color.GRAY_DARK;
+        colorRegister = color.BLUE_DARK;
     }
     return (
         <View style={ styles.containerBody }>
@@ -56,41 +59,27 @@ const Body = () => {
 const LoginScreen = () => {
     let [email, setEmail] = useState('');
     let [password, setPassword] = useState('');
-    let [eye, setEye] = useState(false);
     return (
         <View>
             <Text style={ styles.textTitle }>Login in your account </Text>
-            <View style={ styles.boxDataEntry }>
-                <Image style={ styles.icon }
-                    source={ require('../images/icon_mail.png')}
-                ></Image>
-                <TextInput style={ styles.textDataEntry}
-                    onChangeText= {(newWord) => setEmail(newWord)}
-                    placeholder= 'E-mail'
-                ></TextInput>
-            </View>
-            <View style={ styles.boxDataEntry }>
-                <Image style={ styles.icon }
-                    source={ require('../images/icon_lock.png')}
-                ></Image>
-                <TextInput style={ styles.textDataEntry}
-                    onChangeText= {(newWord) => setPassword(newWord)}
-                    placeholder= 'Password'
-                    secureTextEntry= {!eye}
-                ></TextInput>
-                <TouchableOpacity style= {styles.icon}
-                    onPress= {() => setEye(!eye)}
-                >
-                    <Image style={ {height: '100%', width: '100%'} }
-                        source={ eye ? require('../images/icon_eye.png') : require('../images/icon_eye_slash.png') }
-                    ></Image>
-                </TouchableOpacity>
-            </View>
+            <FieldInput
+            onChangeText= {(newWord) => setEmail(newWord)}
+            placeholder= 'E-mail'
+            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_mail.png')}
+            />
+            <FieldInput
+            onChangeText= {(newWord) => setPassword(newWord)}
+            placeholder= 'Password'
+            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_mail.png')}
+            buttonIcon={true}
+            uriIconOn={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye.png')}
+            uriIconOff={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye_slash.png')}
+            />
             <Text style={ styles.textFogetPassword }
                 onPress={ ()=> {}}
             >Foget password? </Text>
             <TouchableOpacity style={ styles.buttonHanlde }
-                onPress={ () => {navigations.navigate('ListChatRoom')}}
+                onPress={ () => {navigations.navigate('Home')}}
             >
                 <Text style={ styles.textTitleSmall}> Login </Text>
             </TouchableOpacity>
@@ -103,55 +92,35 @@ const RegisterScreen = () => {
     let [email, setEmail] = useState('');
     let [password, setPassword] = useState('');
     let [rePassword, setRePassword] = useState('');
-    let [eye, setEye] = useState(false);
     return (
         <View>
             <Text style={ styles.textTitle }>Login in your account </Text>
-            <View style={ styles.boxDataEntry }>
-                <Image style={ styles.icon }
-                    source={ require('../images/icon_person.png')}
-                ></Image>
-                <TextInput style={ styles.textDataEntry}
-                    onChangeText= {(newWord) => setUserName(newWord)}
-                    placeholder= 'User Name'
-                ></TextInput>
-            </View>
-            <View style={ styles.boxDataEntry }>
-                <Image style={ styles.icon }
-                    source={ require('../images/icon_mail.png')}
-                ></Image>
-                <TextInput style={ styles.textDataEntry}
-                    onChangeText= {(newWord) => setEmail(newWord)}
-                    placeholder= 'E-mail'
-                ></TextInput>
-            </View>
-            <View style={ styles.boxDataEntry }>
-                <Image style={ styles.icon }
-                    source={ require('../images/icon_lock.png')}
-                ></Image>
-                <TextInput style={ styles.textDataEntry}
-                    onChangeText= {(newWord) => setPassword(newWord)}
-                    placeholder= 'Password'
-                    secureTextEntry= {!eye}
-                ></TextInput>
-                <TouchableOpacity style= {styles.icon}
-                    onPress= {() => setEye(!eye)}
-                >
-                    <Image style={ {height: '100%', width: '100%'} }
-                        source={ eye ? require('../images/icon_eye.png') : require('../images/icon_eye_slash.png') }
-                    ></Image>
-                </TouchableOpacity>
-            </View>
-            <View style={ styles.boxDataEntry }>
-                <Image style={ styles.icon }
-                    source={ require('../images/icon_lock.png')}
-                ></Image>
-                <TextInput style={ styles.textDataEntry}
-                    onChangeText= {(newWord) => setRePassword(newWord)}
-                    placeholder= 'Repeat Password'
-                    secureTextEntry= {!eye}
-                ></TextInput>
-            </View>
+            <FieldInput
+            onChangeText= {(newWord) => setUserName(newWord)}
+            placeholder= 'User Name'
+            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_person.png')}
+            />
+            <FieldInput
+            onChangeText= {(newWord) => setEmail(newWord)}
+            placeholder= 'E-mail'
+            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_mail.png')}
+            />
+            <FieldInput
+            onChangeText= {(newWord) => setPassword(newWord)}
+            placeholder= 'Password'
+            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_mail.png')}
+            buttonIcon={true}
+            uriIconOn={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye.png')}
+            uriIconOff={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye_slash.png')}
+            />
+            <FieldInput
+            onChangeText= {(newWord) => setRePassword(newWord)}
+            placeholder= 'Repeat Password'
+            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_mail.png')}
+            buttonIcon={true}
+            uriIconOn={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye.png')}
+            uriIconOff={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye_slash.png')}
+            />
             <TouchableOpacity style={ styles.buttonHanlde }
                 onPress={ () => {}}
             >
@@ -181,21 +150,21 @@ const styles = StyleSheet.create({
     containerHeader: {
         height: heightScreen * 0.2,
         width: widthScreen,
-        backgroundColor: Colors.blueDark,
+        backgroundColor: color.BLUE_DARK,
         justifyContent: 'center'
     },
     textTitleSmall: {
         fontSize: 18,
         fontWeight: 'bold',
         alignSelf: 'center',
-        color: Colors.white,
+        color: color.WHITE,
         
     },
     textTitleBig: {
         fontSize: 40,
         fontWeight: 'bold',
         alignSelf: 'center',
-        color: Colors.white,
+        color: color.WHITE,
     },
     containerBody : {
         height: heightScreen * 0.8,
@@ -216,7 +185,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: heightScreen * 0.025,
         marginHorizontal: widthScreen * 0.05,
-        color: Colors.black,
+        color: color.BLACK,
     },
     boxDataEntry: {
         height: heightScreen * 0.05,
@@ -224,7 +193,7 @@ const styles = StyleSheet.create({
         marginTop: heightScreen * 0.025,
         borderRadius: 5,
         elevation: 4,
-        backgroundColor: Colors.white,
+        backgroundColor: color.WHITE,
         flexDirection: 'row',
         alignItems: 'center'
     },
@@ -244,7 +213,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         marginTop: heightScreen * 0.025,
         marginHorizontal: widthScreen * 0.05,
-        color: Colors.black,
+        color: color.BLACK,
     },
     buttonHanlde: {
         height: heightScreen * 0.05,
@@ -252,7 +221,7 @@ const styles = StyleSheet.create({
         marginTop: heightScreen * 0.025,
         borderRadius: 5,
         elevation: 4,
-        backgroundColor: Colors.blueDark,
+        backgroundColor: color.BLUE_DARK,
         justifyContent: 'center',
         alignItems: 'center'
     }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "850560919280",
+    "project_id": "chate2ee",
+    "storage_bucket": "chate2ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:850560919280:android:9cd9f042ed99117e168435",
+        "android_client_info": {
+          "package_name": "com.chate2ee"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "850560919280-md7cn0us50d9sgh4cakde9vf8gf3h07f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3Ov1y55Cx-cd0jQvHOW4Z68qb1NRz8CA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "850560919280-md7cn0us50d9sgh4cakde9vf8gf3h07f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
