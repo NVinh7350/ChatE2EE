@@ -14,6 +14,8 @@ const SCREEN_REGISTER= 'SCREEN_REGISTER';
 let   colorLogin = '';
 let   colorRegister = '';
 
+
+
 // const Header = () => {
 //     return (
 //         <View style={ styles.containerHeader }>
