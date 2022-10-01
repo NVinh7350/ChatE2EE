@@ -1,9 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { Fragment } from 'react'
 import Index from './src/navigation/index'
+import Loader from './src/component/loader'
+import { StoreProvider } from './src/context/store'
 const App = () => {
   return (
-    <Index/>
+    <StoreProvider>
+        <Index/>
+        <Loader/>
+    </StoreProvider>
   )
 }
 

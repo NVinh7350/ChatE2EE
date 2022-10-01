@@ -1,10 +1,12 @@
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View , Image, Alert} from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 // import color from 'C:/Learn/ChatE2EE/src/utility/index.js'
 let navigations = null;
 import {color} from 'c:/Learn/ChatE2EE/src/utility'
 import FieldInput from '../../component/fieldInput';
 import FieldButton from '../../component/fieldButton';
+import { Store } from '../../context/store';
+import { LOADING_START, LOADING_STOP } from '../../context/actions/types';
 //
 const heightScreen = Dimensions.get('screen').height;
 const widthScreen = Dimensions.get('screen').width;
@@ -13,6 +15,7 @@ const SCREEN_LOGIN = 'SCREEN_LOGIN';
 const SCREEN_REGISTER= 'SCREEN_REGISTER';
 let   colorLogin = '';
 let   colorRegister = '';
+
 
 const Header = () => {
     return (
@@ -41,13 +44,13 @@ const Body = () => {
                     onPress={ () => setScreen(SCREEN_LOGIN) }
                     textStyle={ [styles.textTitleSmall, {color: colorLogin}] }
                     title= 'Sign In'
-                />
+                    ></FieldButton>
                 <FieldButton
                     containerStyle={[styles.buttonTap, {borderBottomColor: colorRegister}]}
                     onPress={ () => setScreen(SCREEN_REGISTER) }
                     textStyle={ [styles.textTitleSmall, {color: colorRegister}] }
                     title= 'Sign Up'
-                />
+                    ></FieldButton>
             </View>
             {
                 screen === SCREEN_LOGIN ?
@@ -59,77 +62,130 @@ const Body = () => {
 }
 
 const LoginScreen = () => {
-    let [email, setEmail] = useState('');
-    let [password, setPassword] = useState('');
+    const globalState = useContext(Store);
+    const {dispatchLoaderAction} = globalState;
+
+    let [dataLogin, setDataLogin] = useState({
+        email: '',
+        password: '',
+    })
+    const handleLogin = () => {
+        if(dataLogin.email && dataLogin.password) {
+            Alert.alert('handleLogin() SUCCESS', JSON.stringify(dataLogin));
+            dispatchLoaderAction({
+                type: LOADING_START,
+            });
+            setTimeout(()=>{
+                dispatchLoaderAction({
+                    type: LOADING_STOP,
+                });
+            }, 2000);
+        }
+        else {
+            
+            Alert.alert('handleLogin() ERROR', JSON.stringify(dataLogin));
+        }
+    }
+   console.log(JSON.stringify(dataLogin))
+    const entryData = (key, value) => {
+        setDataLogin({
+            ...dataLogin, 
+            [key] : value,
+        })
+    }
+
     return (
         <View>
-            <Text style={ styles.textTitle }>Login in your account </Text>
+            <Text 
+                style={ styles.textTitle }>
+                Login in your account </Text>
             <FieldInput
-            // fieldStyle={{flexDirection: 'row-reverse'}}
-            // inputStyle={{width: widthScreen * 0.73 ,}}
-            onChangeText= {(newWord) => setEmail(newWord)}
-            placeholder= 'E-mail'
-            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_mail.png')}
-            />
+                // fieldStyle={{flexDirection: 'row-reverse'}}
+                // inputStyle={{width: widthScreen * 0.73 ,}}
+                onChangeText={ (newWord) => entryData('email', newWord) }
+                placeholder= 'E-mail'
+                uriIconTitle={require('../../utility/images/icon_mail.png')}
+                ></FieldInput>
             <FieldInput
-            onChangeText= {(newWord) => setPassword(newWord)}
-            placeholder= 'Password'
-            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_mail.png')}
-            buttonIcon={true}
-            uriIconOn={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye.png')}
-            uriIconOff={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye_slash.png')}
-            />
-            <Text style={ styles.textFogetPassword }
+                onChangeText={ (newWord) => entryData('password', newWord) }
+                placeholder= 'Password'
+                uriIconTitle={require('../../utility/images/icon_mail.png')}
+                buttonIcon={true}
+                uriIconOn={require('../../utility/images/icon_eye.png')}
+                uriIconOff={require('../../utility/images/icon_eye_slash.png')}
+                ></FieldInput>
+            <Text 
+                style={ styles.textFogetPassword }
                 onPress={ ()=> {}}
-            >Foget password? </Text>
+                >Foget password? </Text>
 
             <FieldButton
-            title={'Login'}
-            onPress={ () => {navigations.navigate('Home')}}
-            />
+                title={'Login'}
+                // onPress={ () => {navigations.navigate('Home')}}
+                onPress={ () => handleLogin()}
+                ></FieldButton>
 
         </View>
     )
 }
 
 const RegisterScreen = () => {
-    let [userName, setUserName] = useState('');
-    let [email, setEmail] = useState('');
-    let [password, setPassword] = useState('');
-    let [rePassword, setRePassword] = useState('');
+    let [dataRegister, setDataRegister] = useState({
+        userName: '',
+        email: '',
+        password: '',
+        rePassword: '',
+    })
+    const handleRegister = () => {
+        if(dataRegister.email && dataRegister.password &&
+            dataRegister.userName && (dataRegister.rePassword === dataRegister.password) ) {
+            Alert.alert('handleLogin() SUCCESS', JSON.stringify(dataRegister));
+        }
+        else {
+            Alert.alert('handleLogin() ERROR', JSON.stringify(dataRegister));
+        }
+    }
+   console.log(JSON.stringify(dataRegister))
+    const entryData = (key, value) => {
+        setDataRegister({
+            ...dataRegister, 
+            [key] : value,
+        })
+    }
     return (
         <View>
             <Text style={ styles.textTitle }>Login in your account </Text>
             <FieldInput
-            onChangeText= {(newWord) => setUserName(newWord)}
-            placeholder= 'User Name'
-            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_person.png')}
-            />
+                onChangeText={ (newWord) => entryData('userName', newWord) }
+                placeholder= 'User Name'
+                uriIconTitle={require('../../utility/images/icon_person.png')}
+                ></FieldInput>
             <FieldInput
-            onChangeText= {(newWord) => setEmail(newWord)}
-            placeholder= 'E-mail'
-            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_mail.png')}
-            />
+                onChangeText={ (newWord) => entryData('email', newWord) }
+                placeholder= 'E-mail'
+                uriIconTitle={require('../../utility/images/icon_mail.png')}
+                ></FieldInput>
             <FieldInput
-            onChangeText= {(newWord) => setPassword(newWord)}
-            placeholder= 'Password'
-            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_mail.png')}
-            buttonIcon={true}
-            uriIconOn={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye.png')}
-            uriIconOff={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye_slash.png')}
-            />
+                onChangeText={ (newWord) => entryData('password', newWord) }
+                placeholder= 'Password'
+                uriIconTitle={require('../../utility/images/icon_mail.png')}
+                buttonIcon={true}
+                uriIconOn={require('../../utility/images/icon_eye.png')}
+                uriIconOff={require('../../utility/images/icon_eye_slash.png')}
+                ></FieldInput>
             <FieldInput
-            onChangeText= {(newWord) => setRePassword(newWord)}
-            placeholder= 'Repeat Password'
-            uriIconTitle={require('C:/Learn/ChatE2EE/src/utility/images/icon_mail.png')}
-            buttonIcon={true}
-            uriIconOn={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye.png')}
-            uriIconOff={require('C:/Learn/ChatE2EE/src/utility/images/icon_eye_slash.png')}
-            />
+                onChangeText={ (newWord) => entryData('rePassword', newWord) }
+                placeholder= 'Repeat Password'
+                uriIconTitle={require('../../utility/images/icon_mail.png')}
+                buttonIcon={true}
+                uriIconOn={require('../../utility/images/icon_eye.png')}
+                uriIconOff={require('../../utility/images/icon_eye_slash.png')}
+                ></FieldInput>
             <FieldButton
-            title={'Register'}
-            onPress={ () => {navigations.navigate('Home')}}
-            />
+                title={'Register'}
+                // onPress={ () => {navigations.navigate('Home')}}
+                onPress={ () => {handleRegister()}}
+                ></FieldButton>
         </View>
     )
 }
@@ -137,7 +193,7 @@ const RegisterScreen = () => {
 const Login = ({navigation}) => {
     navigations= navigation;
   return (
-    <View style={ styles.container }>
+    <View>
         <Header/>
         <Body/>
     </View>
@@ -147,7 +203,6 @@ const Login = ({navigation}) => {
 export default Login
 
 const styles = StyleSheet.create({
-
     containerHeader: {
         height: heightScreen * 0.2,
         width: widthScreen,
