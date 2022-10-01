@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { StyleSheet , View, Image, TouchableOpacity} from "react-native";
+import { StyleSheet , View, Image, TouchableOpacity, TextInput} from "react-native";
 import  Input  from "../input"
 import { color } from "../../utility";
 import styles from "./styles";
@@ -12,6 +12,8 @@ const FieldInput = ({
   ref,
   onSubmitEditing,
   getRef,
+  fieldStyle,
+  inputStyle,
   uriIconTitle,
   buttonIcon,
   uriIconOff,
@@ -19,16 +21,18 @@ const FieldInput = ({
 }) => {
     let [eye, setEye] = useState(buttonIcon);
     return (
-    <View style={[ styles.boxDataEntry ]}>
+    <View style={[ styles.containerDataEntry, fieldStyle ]}>
+        {/* ICON LEFT */}
         <Image 
         style={[ styles.icon ]}
         source={ uriIconTitle }
         ></Image>
-        <Input
+        {/* TEXT INPUT */}
+        <TextInput
+        style={[styles.textDataEntry, inputStyle]}
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
-        style={styles.input}
         secureTextEntry={eye}
         onFocus={onFocus}
         onBlur={onBlur}
@@ -37,6 +41,7 @@ const FieldInput = ({
         getRef={getRef}
         onSubmitEditing={onSubmitEditing}
       />
+        {/* check right have BUTTON ICON RIGHT  */}
         {
             buttonIcon && 
             <TouchableOpacity 
