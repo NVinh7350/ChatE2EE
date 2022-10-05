@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import { StyleSheet , View, Image, TouchableOpacity, TextInput} from "react-native";
-import  Input  from "../input"
 import { color } from "../../utility";
 import styles from "./styles";
 const FieldInput = ({
@@ -40,6 +39,7 @@ const FieldInput = ({
         ref={ref}
         getRef={getRef}
         onSubmitEditing={onSubmitEditing}
+        placeholderTextColor={color.GRAY_BLAND}
       />
         {/* check right have BUTTON ICON RIGHT  */}
         {

@@ -1,7 +1,12 @@
-import { FlatList, StyleSheet, Text, View, Dimensions, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native'
+import { FlatList, StyleSheet, Text, View, Dimensions, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, ScrollView, Alert } from 'react-native'
 import React, {useState} from 'react'
 import { useNavigation } from '@react-navigation/native';
-
+import { LogOutRequest } from '../../network';
+import { clearAsyncStorage } from '../../asyncStorage';
+import { color } from '../../utility';
+import { ReactNativeFirebase } from '@react-native-firebase/app';
+import firebase from '../../firebase/config'
+import db from '@react-native-firebase/database'
 let navigations;
 const heightScreen = Dimensions.get('screen').height;
 const widthScreen = Dimensions.get('screen').width;
@@ -76,8 +81,40 @@ const listRoom = [
 const fixText = (name) => {
     return name.length > 24 ? name.slice(0,20).concat('...') : name
 }
+
+const handleLogout = () => {
+    // Alert.alert('Logout', 'are you sure?',[
+    //     {
+    //         text: 'Yes',
+    //         onPress: (()=>{
+    //             LogOutRequest()
+    //             .then(()=>{
+    //                 clearAsyncStorage()
+    //                 .then(()=>{
+    //                     navigations.navigate('Login');
+    //                 })
+    //             })
+    //             .catch((error)=>{
+    //                 alert(error.message);
+    //             })
+    //         })
+    //     },
+    //     {
+    //         text: 'No',
+    //     },
+        
+    // ],
+    // const a = async() => {
+    //     await firebase.database('https://chate2ee-default-rtdb.firebaseio.com').ref('user');
+    // }
+    // )
+    Alert.alert('', db(firebase).app.database().ref('user/'));
+    // db(firebase).ref('user/').on('value', sn => alert('','value'+sn));
+}
+
 const HeaderComponent = () =>{
     let [search, setSearch] = useState('');
+    // Alert.alert('mess', firebase.options.databaseURL);
     return (
         <View style={ styles.header }>
             <View style={ styles.searchInput }>
@@ -100,7 +137,16 @@ const HeaderComponent = () =>{
                         source= {{uri:'https://scontent.fsgn2-3.fna.fbcdn.net/v/t39.30808-6/258382205_1087261675423344_3439049621487177253_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=z-XUbf02CHQAX_ywK_c&_nc_ht=scontent.fsgn2-3.fna&oh=00_AT_5jccyS9ulEC6TeXNp_nbVB3vhHDb3yMy8qOjgSJdQ3g&oe=632A0D26'}}
                     ></Image>
                 </TouchableOpacity>
-                <Text style={ styles.title}>   Chats</Text>
+                <Text style={ styles.title}>   Chatst</Text>
+                <TouchableOpacity
+                    style={ [styles.imageFrameSmall, {marginLeft:widthScreen*0.4, height: heightScreen*0.035},] }
+                    onPress= {()=> handleLogout()}
+                >   
+                    <Image 
+                        style= {[styles.imageCircle, {}]}
+                        source= {require('../../utility/images/button_off.png')}
+                    ></Image>
+                </TouchableOpacity>
             </View>
         </View>
     )
@@ -228,7 +274,7 @@ const styles = StyleSheet.create({
         height: heightScreen * 0.19,
         width: widthScreen,
         flexDirection: 'column-reverse',
-        backgroundColor: Green,
+        backgroundColor: color.BLUE_DARK,
         paddingHorizontal: widthScreen* 0.04,
         paddingVertical: heightScreen* 0.02,
     },

@@ -21,9 +21,10 @@ export default StyleSheet.create({
         width: widthScreen * 0.045
     },
     textDataEntry: {
-        height: heightScreen * 0.05,
+        height: heightScreen * 0.06,
         width: widthScreen * 0.63 ,
         fontSize: 16,
-        fontFamily: 'sans-serif-medium'
+        fontFamily: 'sans-serif-medium',
+        color: color.BLACK,
     },
 });

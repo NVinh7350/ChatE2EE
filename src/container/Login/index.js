@@ -7,6 +7,12 @@ import FieldInput from '../../component/fieldInput';
 import FieldButton from '../../component/fieldButton';
 import { Store } from '../../context/store';
 import { LOADING_START, LOADING_STOP } from '../../context/actions/types';
+import { RegisterRequest, AddUser, LoginRequest, LogOutRequest } from '../../network';
+import { setAsyncStorage, keys, clearAsyncStorage } from "../../asyncStorage";
+import {setUniqueValue} from "../../utility/constants"
+import auth from '@react-native-firebase/auth';
+import firebase from '../../firebase/config'
+import md5 from 'md5';
 //
 const heightScreen = Dimensions.get('screen').height;
 const widthScreen = Dimensions.get('screen').width;
@@ -15,7 +21,6 @@ const SCREEN_LOGIN = 'SCREEN_LOGIN';
 const SCREEN_REGISTER= 'SCREEN_REGISTER';
 let   colorLogin = '';
 let   colorRegister = '';
-
 
 const Header = () => {
     return (
@@ -64,29 +69,45 @@ const Body = () => {
 const LoginScreen = () => {
     const globalState = useContext(Store);
     const {dispatchLoaderAction} = globalState;
-
     let [dataLogin, setDataLogin] = useState({
-        email: '',
-        password: '',
+        email: 'dev2@gmail.com',
+        password: '123456',
     })
+    
     const handleLogin = () => {
         if(dataLogin.email && dataLogin.password) {
-            Alert.alert('handleLogin() SUCCESS', JSON.stringify(dataLogin));
             dispatchLoaderAction({
                 type: LOADING_START,
             });
-            setTimeout(()=>{
-                dispatchLoaderAction({
-                    type: LOADING_STOP,
-                });
-            }, 2000);
+            LoginRequest(dataLogin.email , dataLogin.password)
+                .then((res) => {
+                    if (!res.additionalUserInfo) {
+                        dispatchLoaderAction({
+                          type: LOADING_STOP,
+                        });
+                        alert(res);
+                        return;
+                    }
+                    setAsyncStorage(keys.uuid, res.user.uid);
+                    setUniqueValue(res.user.uid);
+                    dispatchLoaderAction({
+                        type: LOADING_STOP,
+                    });
+                    console.log(dataLogin.password)
+                    navigations.navigate("Home");
+                })
+                .catch((error) => {
+                    dispatchLoaderAction({
+                        type: LOADING_STOP,
+                    });
+                        Alert.alert('handleLogin()',error.message )
+                    });
         }
         else {
             
             Alert.alert('handleLogin() ERROR', JSON.stringify(dataLogin));
         }
     }
-   console.log(JSON.stringify(dataLogin))
     const entryData = (key, value) => {
         setDataLogin({
             ...dataLogin, 
@@ -103,11 +124,11 @@ const LoginScreen = () => {
                 // fieldStyle={{flexDirection: 'row-reverse'}}
                 // inputStyle={{width: widthScreen * 0.73 ,}}
                 onChangeText={ (newWord) => entryData('email', newWord) }
-                placeholder= 'E-mail'
+                placeholder= 'E-mail '
                 uriIconTitle={require('../../utility/images/icon_mail.png')}
                 ></FieldInput>
             <FieldInput
-                onChangeText={ (newWord) => entryData('password', newWord) }
+                onChangeText={ (newWord) => entryData('password', md5(newWord)) }
                 placeholder= 'Password'
                 uriIconTitle={require('../../utility/images/icon_mail.png')}
                 buttonIcon={true}
@@ -130,28 +151,77 @@ const LoginScreen = () => {
 }
 
 const RegisterScreen = () => {
+    const globalState = useContext(Store);
+    const {dispatchLoaderAction} = globalState;
+
     let [dataRegister, setDataRegister] = useState({
-        userName: '',
-        email: '',
-        password: '',
-        rePassword: '',
+        userName: 'dev4',
+        email: 'dev4@gmail.com',
+        password: '123456',
+        rePassword: '123456',
     })
-    const handleRegister = () => {
-        if(dataRegister.email && dataRegister.password &&
-            dataRegister.userName && (dataRegister.rePassword === dataRegister.password) ) {
-            Alert.alert('handleLogin() SUCCESS', JSON.stringify(dataRegister));
-        }
-        else {
-            Alert.alert('handleLogin() ERROR', JSON.stringify(dataRegister));
-        }
-    }
-   console.log(JSON.stringify(dataRegister))
     const entryData = (key, value) => {
         setDataRegister({
             ...dataRegister, 
             [key] : value,
         })
     }
+    
+    const handleRegister = () => {
+        if(dataRegister.email && dataRegister.password &&
+            dataRegister.userName && (dataRegister.rePassword === dataRegister.password) ) {
+            // Alert.alert('handleLogin() SUCCESS', JSON.stringify(dataRegister));
+            dispatchLoaderAction({
+                type: LOADING_START,
+            });
+            RegisterRequest(dataRegister.email, dataRegister.password)
+            .then((res)=> {
+                if (!res.additionalUserInfo) {
+                    dispatchLoaderAction({
+                      type: LOADING_STOP,
+                    });
+                    alert(res);
+                    return;
+                }
+                console.log('RegisterRequest 163',dataRegister.email+ dataRegister.password)
+                let uid = auth().currentUser.uid;
+                console.log(uid)
+                let profileImg = "";
+                console.log('RegisterRequest 166')
+                AddUser(dataRegister.userName, dataRegister.email, uid, profileImg)
+                    .then(() => {
+                        console.log('RegisterRequest 168')
+                        setAsyncStorage(keys.uuid, uid);
+                        setUniqueValue(uid);
+                        console.log('RegisterRequest 171')
+                        dispatchLoaderAction({
+                            type: LOADING_STOP,
+                        });
+                        // navigations.navigate("Home");
+                        // setScreen(SCREEN_LOGIN);
+                        console.log('AddUser(dataRegister.userName, dataRegister.email, uid, profileImg)', dataRegister.password);
+                    })
+                    .catch((error) => {
+                    dispatchLoaderAction({
+                        type: LOADING_STOP,
+                    });
+                    Alert.alert('handleRegister()182', error.message);
+                    });
+                })
+            .catch((error)=> {
+                dispatchLoaderAction({
+                    type: LOADING_STOP,
+                });
+                Alert.alert('handleRegister()', error.message);
+            })
+
+        }
+        else {
+            Alert.alert('handleLogin() ERROR', JSON.stringify(dataRegister));
+        }
+    }
+
+    
     return (
         <View>
             <Text style={ styles.textTitle }>Login in your account </Text>
@@ -166,7 +236,7 @@ const RegisterScreen = () => {
                 uriIconTitle={require('../../utility/images/icon_mail.png')}
                 ></FieldInput>
             <FieldInput
-                onChangeText={ (newWord) => entryData('password', newWord) }
+                onChangeText={ (newWord) => entryData('password', md5(newWord)) }
                 placeholder= 'Password'
                 uriIconTitle={require('../../utility/images/icon_mail.png')}
                 buttonIcon={true}
@@ -174,7 +244,7 @@ const RegisterScreen = () => {
                 uriIconOff={require('../../utility/images/icon_eye_slash.png')}
                 ></FieldInput>
             <FieldInput
-                onChangeText={ (newWord) => entryData('rePassword', newWord) }
+                onChangeText={ (newWord) => entryData('rePassword', md5(newWord)) }
                 placeholder= 'Repeat Password'
                 uriIconTitle={require('../../utility/images/icon_mail.png')}
                 buttonIcon={true}
