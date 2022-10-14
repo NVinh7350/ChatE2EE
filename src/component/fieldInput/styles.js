@@ -16,11 +16,12 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
     icon: {
-        marginHorizontal: widthScreen * 0.045,
+        marginLeft: widthScreen * 0.045,
         height: heightScreen * 0.0225,
         width: widthScreen * 0.045
     },
     textDataEntry: {
+        marginLeft:widthScreen * 0.045,
         height: heightScreen * 0.06,
         width: widthScreen * 0.63 ,
         fontSize: 16,

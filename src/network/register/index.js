@@ -1,9 +1,7 @@
-import firebase from "../../firebase/config";
+import { auth } from "../../firebase/config";
 const RegisterRequest = async (email, password) => {
   try {
-    return await firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password);
+    return await auth.createUserWithEmailAndPassword(email, password);
   } catch (error) {
     return error;
   }

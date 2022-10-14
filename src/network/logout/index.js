@@ -1,8 +1,8 @@
-import firebase from '../../firebase/config'
+import { auth } from '../../firebase/config'
 
 const logOutRequest =async () => {
     try {
-        return await firebase.auth().signOut();
+        return await auth.signOut();
     } catch (error) {
         return error;
     }

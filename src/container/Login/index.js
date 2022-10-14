@@ -1,6 +1,5 @@
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View , Image, Alert} from 'react-native'
 import React, { useContext, useState } from 'react'
-// import color from 'C:/Learn/ChatE2EE/src/utility/index.js'
 let navigations = null;
 import {color} from 'c:/Learn/ChatE2EE/src/utility'
 import FieldInput from '../../component/fieldInput';
@@ -10,8 +9,7 @@ import { LOADING_START, LOADING_STOP } from '../../context/actions/types';
 import { RegisterRequest, AddUser, LoginRequest, LogOutRequest } from '../../network';
 import { setAsyncStorage, keys, clearAsyncStorage } from "../../asyncStorage";
 import {setUniqueValue} from "../../utility/constants"
-import auth from '@react-native-firebase/auth';
-import firebase from '../../firebase/config'
+import { auth } from '../../firebase/config'
 import md5 from 'md5';
 //
 const heightScreen = Dimensions.get('screen').height;
@@ -21,6 +19,7 @@ const SCREEN_LOGIN = 'SCREEN_LOGIN';
 const SCREEN_REGISTER= 'SCREEN_REGISTER';
 let   colorLogin = '';
 let   colorRegister = '';
+let newEmail = '';
 
 const Header = () => {
     return (
@@ -33,6 +32,7 @@ const Header = () => {
 
 const Body = () => {
     let [screen, setScreen] = useState(SCREEN_LOGIN);
+    
     if (screen === SCREEN_LOGIN){
         colorLogin = color.BLUE_DARK;
         colorRegister = color.GRAY_DARK;
@@ -59,8 +59,8 @@ const Body = () => {
             </View>
             {
                 screen === SCREEN_LOGIN ?
-                <LoginScreen/> :
-                <RegisterScreen/>
+                <LoginScreen /> :
+                <RegisterScreen setScreen= {setScreen} />
             }
         </View>
     )
@@ -70,10 +70,10 @@ const LoginScreen = () => {
     const globalState = useContext(Store);
     const {dispatchLoaderAction} = globalState;
     let [dataLogin, setDataLogin] = useState({
-        email: 'dev2@gmail.com',
-        password: '123456',
+        // email: newEmail,
+        email : 'dev22@gmail.com',
+        password:  md5('123456'),
     })
-    
     const handleLogin = () => {
         if(dataLogin.email && dataLogin.password) {
             dispatchLoaderAction({
@@ -93,8 +93,8 @@ const LoginScreen = () => {
                     dispatchLoaderAction({
                         type: LOADING_STOP,
                     });
-                    console.log(dataLogin.password)
-                    navigations.navigate("Home");
+                    newEmail = '';
+                    navigations.navigate("Home", {uid: auth.currentUser.uid});
                 })
                 .catch((error) => {
                     dispatchLoaderAction({
@@ -104,8 +104,7 @@ const LoginScreen = () => {
                     });
         }
         else {
-            
-            Alert.alert('handleLogin() ERROR', JSON.stringify(dataLogin));
+             Alert.alert('handleLogin() ERROR', JSON.stringify(dataLogin));
         }
     }
     const entryData = (key, value) => {
@@ -114,7 +113,6 @@ const LoginScreen = () => {
             [key] : value,
         })
     }
-
     return (
         <View>
             <Text 
@@ -126,6 +124,7 @@ const LoginScreen = () => {
                 onChangeText={ (newWord) => entryData('email', newWord) }
                 placeholder= 'E-mail '
                 uriIconTitle={require('../../utility/images/icon_mail.png')}
+                value = {newEmail !== ''? newEmail : dataLogin.email}
                 ></FieldInput>
             <FieldInput
                 onChangeText={ (newWord) => entryData('password', md5(newWord)) }
@@ -139,10 +138,8 @@ const LoginScreen = () => {
                 style={ styles.textFogetPassword }
                 onPress={ ()=> {}}
                 >Foget password? </Text>
-
             <FieldButton
                 title={'Login'}
-                // onPress={ () => {navigations.navigate('Home')}}
                 onPress={ () => handleLogin()}
                 ></FieldButton>
 
@@ -150,13 +147,13 @@ const LoginScreen = () => {
     )
 }
 
-const RegisterScreen = () => {
+const RegisterScreen = ({setScreen}) => {
     const globalState = useContext(Store);
     const {dispatchLoaderAction} = globalState;
 
     let [dataRegister, setDataRegister] = useState({
-        userName: 'dev4',
-        email: 'dev4@gmail.com',
+        userName: 'dev21',
+        email: 'dev21@gmail.com',
         password: '123456',
         rePassword: '123456',
     })
@@ -170,7 +167,6 @@ const RegisterScreen = () => {
     const handleRegister = () => {
         if(dataRegister.email && dataRegister.password &&
             dataRegister.userName && (dataRegister.rePassword === dataRegister.password) ) {
-            // Alert.alert('handleLogin() SUCCESS', JSON.stringify(dataRegister));
             dispatchLoaderAction({
                 type: LOADING_START,
             });
@@ -183,29 +179,22 @@ const RegisterScreen = () => {
                     alert(res);
                     return;
                 }
-                console.log('RegisterRequest 163',dataRegister.email+ dataRegister.password)
-                let uid = auth().currentUser.uid;
-                console.log(uid)
+                let uid = auth.currentUser.uid;
                 let profileImg = "";
-                console.log('RegisterRequest 166')
                 AddUser(dataRegister.userName, dataRegister.email, uid, profileImg)
                     .then(() => {
-                        console.log('RegisterRequest 168')
                         setAsyncStorage(keys.uuid, uid);
                         setUniqueValue(uid);
-                        console.log('RegisterRequest 171')
                         dispatchLoaderAction({
                             type: LOADING_STOP,
                         });
-                        // navigations.navigate("Home");
-                        // setScreen(SCREEN_LOGIN);
-                        console.log('AddUser(dataRegister.userName, dataRegister.email, uid, profileImg)', dataRegister.password);
+                        newEmail = dataRegister.email;
+                        setScreen(SCREEN_LOGIN);
                     })
                     .catch((error) => {
                     dispatchLoaderAction({
                         type: LOADING_STOP,
                     });
-                    Alert.alert('handleRegister()182', error.message);
                     });
                 })
             .catch((error)=> {

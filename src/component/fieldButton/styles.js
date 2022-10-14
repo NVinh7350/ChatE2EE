@@ -11,14 +11,15 @@ export default StyleSheet.create({
         marginTop: heightScreen * 0.025,
         borderRadius: 5,
         elevation: 4,
+        flexDirection:'row',
         backgroundColor: color.BLUE_DARK,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        
     },
     icon: {
-        marginHorizontal: widthScreen * 0.045,
         height: heightScreen * 0.0225,
-        width: widthScreen * 0.045
+        width: widthScreen * 0.05,
     },
     textButton: {
         fontSize: 18,

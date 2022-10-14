@@ -22,10 +22,14 @@ const FieldInput = ({
     return (
     <View style={[ styles.containerDataEntry, fieldStyle ]}>
         {/* ICON LEFT */}
-        <Image 
-        style={[ styles.icon ]}
-        source={ uriIconTitle }
-        ></Image>
+        {
+            uriIconTitle ?
+            <Image 
+                style={[ styles.icon ]}
+                source={ uriIconTitle }
+            ></Image>:
+            <View></View>
+        }
         {/* TEXT INPUT */}
         <TextInput
         style={[styles.textDataEntry, inputStyle]}

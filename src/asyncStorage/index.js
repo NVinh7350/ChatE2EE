@@ -1,7 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from "react-native";
 
 export const keys = {
     uuid: 'uuid',
+    currentKey: 'currentKey'
 };
 
 const setAsyncStorage = async (key, item) => {
@@ -14,7 +16,7 @@ const setAsyncStorage = async (key, item) => {
 
 const getAsyncStorage = async (key) => {
     try {
-        const value = await AsyncStorage.setItem(key);
+        const value = await AsyncStorage.getItem(key);
         if(value) {
             return value;
         } else {
